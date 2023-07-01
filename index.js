@@ -45,6 +45,11 @@ class Jogador {
         this.radians = 0.75; 
         this.openRate = 0.12;
         this.rotate = 0;
+        this.wakaSound = new Audio('../sounds/waka.wav')
+        this.powerdotSound = new Audio('../sounds/power_dot.wav')
+        this.gameOverSound = new Audio('../sounds/gameOver.wav')
+        this.gameWinSound = new Audio('../sounds/gameWin.wav')
+        this.eatghostSound = new Audio('../sounds/eat_ghost.wav')
     }
     
     drawp(){
@@ -87,7 +92,7 @@ class Bolinha {
 
 class Fantasma {
     static speed = 2;
-    constructor({position,velocity, color = 'red' }){
+    constructor({position,velocity, color = 'red', image}){
         this.position = position;
         this.velocity = velocity;
         this.radius = 15;
@@ -95,11 +100,13 @@ class Fantasma {
         this.colisoesprevias = [];
         this.speed = 2;
         this.assutado = false;
+        // this.image = image; 
     }
     
     drawg(){
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
+        // ctx.drawImage(this.image,this.position.x , this.position.y);
         ctx.fillStyle = this.assutado ? 'blue' : this.color;
         ctx.fill();
         ctx.closePath();
@@ -119,7 +126,7 @@ class PowerUp {
 
     draw(){
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
+        ctx.arc(this.position.x, this.position.y , this.radius, 0, Math.PI*2);
         ctx.fillStyle = 'green';
         ctx.fill();
         ctx.closePath();
@@ -140,7 +147,8 @@ let fantasmas = [
         velocity: {
             x: Fantasma.speed,
             y:0
-        }
+        },
+        // image:criarImagem('../img/ghost.png')
     }),
     new Fantasma({
         position:{
@@ -151,7 +159,8 @@ let fantasmas = [
             x: Fantasma.speed,
             y:0
         },
-        color:'purple'
+        color:'white'
+        // image:criarImagem('../img/ghost.png')
     }),
     new Fantasma({
         position:{
@@ -162,7 +171,8 @@ let fantasmas = [
             x: Fantasma.speed,
             y:0
         },
-        color:'white'
+        color:'purple'
+        // image:criarImagem('../img/ghost.png')
     })
 ];
 let player = new Jogador ({
@@ -419,8 +429,10 @@ function animacao(){
             if(Math.hypot(fantasma.position.x - player.position.x, fantasma.position.y - player.position.y) < fantasma.radius + player.radius){
                 if(fantasma.assutado){
                     fantasmas.splice(i, 1);
+                    player.eatghostSound.play();
                 }else{
                     cancelAnimationFrame(animacaoId);
+                    player.gameOverSound.play();
                     console.log("You Lose")
                     modalEl.style.display = 'flex';
                     scoreboard.style.color = 'black';
@@ -435,10 +447,11 @@ function animacao(){
     // condicao de ganhar fica aqui
     if(bolinhas.length ===  1){
         modalEl2.style.display = 'flex';
-        resultado.innerHTML = "Você Ganhou, PARABÉNS !!";
+        // resultado.innerHTML = "Você Ganhou, PARABÉNS !!";
         resultado.style.color = 'green'; 
         console.log('You win');
         cancelAnimationFrame(animacaoId);
+        player.gameWinSound.play();
         
     }
     // Criação dos PowerUps
@@ -447,8 +460,8 @@ function animacao(){
         powerUp.draw();
         // player coleta o powerup
         if(Math.hypot(powerUp.position.x - player.position.x, powerUp.position.y - player.position.y) < powerUp.radius + player.radius){
-             powerUps.splice(i, 1); // retira a powerUp ao passar em cima
-            
+            powerUps.splice(i, 1); // retira a powerUp ao passar em cima
+            player.powerdotSound.play();
              //fazer os fantasmas ficarem assustados
             fantasmas.forEach(fantasma => {
                 fantasma.assutado = true;
@@ -471,6 +484,7 @@ function animacao(){
             bolinhas.splice(i, 1); // retira a bolinha ao passar em cima
             console.log(bolinhas.length)
             score = score + 10;
+            player.wakaSound.play(); // toca o som do pacman ao comer a bolinha
             scoreEl.innerHTML = score;
             scoreEl2.innerHTML = score;
             scoreEl3.innerHTML = score;
