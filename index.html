@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <body>
 <link rel="stylesheet" href="style.css">
+<div id="GameOver">
+    <label id="textGameOver">Game Over</label>
+    <h1><span id="scoreEl2" class="gover">0</span></h1>
+    <label id="points">Points</label>
+    <button id="restartlose">Restart Game</button>
+</div>
+<div id="GameWin">
+    <label id="textGameWin">WINNER</label>
+    <h1><span id="scoreEl3" class="gwin">0</span></h1>
+    <label id="points2">Points</label>
+    <button id="restartwin">Restart Game</button>
+</div>
+<div id="StartGame">
+    <label id="textStartGame">Pacman Recriation</label>
+    <button id="startbtn">Start</button>
+</div>
+<div><p id = "Result">PACMAN RECRIATION</p></div>
+<canvas width="440" height="520"></canvas>
 <div><p id = "ScoreBoard">
     <span>Score: </span><span id="scoreEl">0</span>
 </p>
 </div>
-<canvas width="440" height="520"></canvas>
-<div><p id = "Result">PACMAN RECRIATION</p></div>
 <script src="index.js" defer></script>
 </body>

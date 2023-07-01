@@ -1,6 +1,7 @@
 body{
     margin: 0;
     background-color: black;
+    font-family: sans-serif
 }
 canvas{
     border: 2px solid yellow;
@@ -33,9 +34,133 @@ p{
     font-size: 40px;
 
 }
-span{
-
-}
 #scoreEl{
     align-self: flex-end;
+    font-size: 40px;
+}
+/* tela de derrota */
+
+#GameOver{
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    max-width: 500px;
+    width: 100%;
+    max-height: 200px;
+    height: 100%;
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+    margin: 0;
+}
+#textGameOver{
+    font-size:16px;
+    color: gray;
+    margin-bottom: 0;
+}
+#scoreEl2.gover{
+    font-size: 60px;
+    margin-bottom: 0px;
+}
+#points{
+    font-size:14px;
+    color: gray;
+    margin: 0px;
+}
+#restartlose{
+    background-color: rgb(42, 106, 209);
+    margin: 20px 20px;
+    padding: 5px 15px 5px 15px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+}
+#restartlose:hover{
+    background-color: rgb(0, 0, 255);
+    cursor: pointer;
+}
+
+/* tela de vitoria */
+
+#GameWin{
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    max-width: 500px;
+    width: 100%;
+    max-height: 200px;
+    height: 100%;
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+    margin: 0;
+}
+#textGameWin{
+    font-weight: bolder;
+    font-size:30px;
+    color: green;
+    margin-bottom: 0;
+}
+#scoreEl3.gwin{
+    font-size: 60px;
+    margin-bottom: 0px;
+}
+#points2{
+    font-size:20px;
+    color: green;
+    margin: 0px;
+}
+#restartwin{
+    background-color: rgb(42, 106, 209);
+    margin: 20px 20px;
+    padding: 5px 15px 5px 15px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+}
+#restartwin:hover{
+    background-color: rgb(0, 0, 255);
+    cursor: pointer;
+}
+#StartGame{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    background-color: rgb(0, 0, 0);
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+    margin: 0;
+}
+#textStartGame{
+    font-weight: bolder;
+    font-size:80px;
+    color: yellow;
+    margin-bottom: 0;
+}
+#startbtn{
+    background-color: rgb(42, 106, 209);
+    margin: 20px 20px;
+    padding: 5px 15px 5px 15px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-size: 40px;
+}
+#startbtn:hover{
+    background-color: rgb(0, 0, 255);
+    cursor: pointer;
+}
+h1{
+    margin-bottom: 0;
 }

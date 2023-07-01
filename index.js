@@ -3,7 +3,16 @@ const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
 const scoreEl = document.getElementById('scoreEl');
+const scoreEl2 = document.getElementById('scoreEl2');
+const scoreEl3 = document.getElementById('scoreEl3');
 const resultado = document.getElementById('Result');
+const modalEl = document.querySelector('#GameOver');
+const modalEl2 = document.querySelector('#GameWin');
+const buttonlose = document.querySelector('#restartlose');
+const buttonwin = document.querySelector('#restartwin');
+const startbtn = document.querySelector('#startbtn');
+const startscreen = document.querySelector('#StartGame')
+const scoreboard = document.querySelector('#ScoreBoard')
 
 
 // canvas.width = window.innerWidth;
@@ -116,11 +125,13 @@ class PowerUp {
         ctx.closePath();
     }
 }
-const bolinhas = [];
-const limites = [];
-const powerUps = [];
+let score = 0;
+let bolinhas = [];
+let limites = [];
+let powerUps = [];
+let lastkey = '';
 //fazer função criar fantasma
-const fantasmas = [
+let fantasmas = [
     new Fantasma({
         position:{
             x:Limite.width*6 + Limite.width/2,
@@ -154,7 +165,7 @@ const fantasmas = [
         color:'white'
     })
 ];
-const player = new Jogador ({
+let player = new Jogador ({
     position: { 
         x:Limite.width + Limite.width/2,
         y:Limite.height + Limite.height/2
@@ -178,10 +189,8 @@ const keys = {
         pressed: false
     }
 }
-let lastkey = '';
-let score = 0;
 // desenhando o mapa por meio de uma matriz
-const mapa = [
+let mapa = [
     ['c1', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'c2'],
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
     ['|', '.', 'blk', '.', '[', '7', ']', '.', 'blk', '.', '|'],
@@ -196,7 +205,6 @@ const mapa = [
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
     ['c4', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'c3']
 ];
-
 function criarImagem(src){
     const image = new Image();
     image.src = src;
@@ -414,7 +422,10 @@ function animacao(){
                 }else{
                     cancelAnimationFrame(animacaoId);
                     console.log("You Lose")
-                    resultado.innerHTML = "Você PERDEU, mais sorte na próxima vez =D !";
+                    modalEl.style.display = 'flex';
+                    scoreboard.style.color = 'black';
+                    scoreboard.style.border = '1px solid black'
+                    // resultado.innerHTML = "Você PERDEU, mais sorte na próxima vez =D !";
                     resultado.style.color = 'red';
                 }
 
@@ -423,6 +434,7 @@ function animacao(){
 
     // condicao de ganhar fica aqui
     if(bolinhas.length ===  1){
+        modalEl2.style.display = 'flex';
         resultado.innerHTML = "Você Ganhou, PARABÉNS !!";
         resultado.style.color = 'green'; 
         console.log('You win');
@@ -460,6 +472,9 @@ function animacao(){
             console.log(bolinhas.length)
             score = score + 10;
             scoreEl.innerHTML = score;
+            scoreEl2.innerHTML = score;
+            scoreEl3.innerHTML = score;
+            
         }
     }
 
@@ -594,8 +609,202 @@ function animacao(){
 
 } // final da animação
 
+function init(){
+    player = [];
+    score = 0;
+    scoreEl.innerHTML = score;
+    scoreEl2.innerHTML = score;
+    scoreEl3.innerHTML = score;
+    resultado.style.color = 'yellow';
+    fantasma = [];
+    bolinhas = [];
+    limites = [];
+    powerUps = [];
+    lastkey = '';
+    //fazer função criar fantasma
+    fantasmas = [
+        new Fantasma({
+            position:{
+                x:Limite.width*6 + Limite.width/2,
+                y:Limite.height + Limite.height/2
+            },
+            velocity: {
+                x: Fantasma.speed,
+                y:0
+            }
+        }),
+        new Fantasma({
+            position:{
+                x:Limite.width*6 + Limite.width/2,
+                y:Limite.height*3 + Limite.height/2
+            },
+            velocity: {
+                x: Fantasma.speed,
+                y:0
+            },
+            color:'purple'
+        }),
+        new Fantasma({
+            position:{
+                x:Limite.width*6 + Limite.width/2,
+                y:Limite.height*9 + Limite.height/2
+            },
+            velocity: {
+                x: Fantasma.speed,
+                y:0
+            },
+            color:'white'
+        })
+    ];
+    player = new Jogador ({
+        position: { 
+            x:Limite.width + Limite.width/2,
+            y:Limite.height + Limite.height/2
+        },
+        velocity:{
+            x:0,
+            y:0
+        }
+    })
+    // redesenhando o mapa por meio de uma matriz
+    mapa = [
+        ['c1', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'c2'],
+        ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+        ['|', '.', 'blk', '.', '[', '7', ']', '.', 'blk', '.', '|'],
+        ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
+        ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
+        ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+        ['|', '.', 'blk', '.', '[', '+', ']', '.', 'blk', '.', '|'],
+        ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
+        ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
+        ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+        ['|', '.', 'blk', '.', '[', '5', ']', '.', 'blk', '.', '|'],
+        ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
+        ['c4', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'c3']
+    ];
+    mapa.forEach((row,i) =>{
+        row.forEach((simbolo,j) =>{
+            switch(simbolo){
+                case '-':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image:criarImagem('./img/pipeHorizontal.png')
+                    }))
+                    break;
+                case '|':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/pipeVertical.png')
+                    }))
+                    break;
+                case 'c1':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/pipeCorner1.png')
+                    }))
+                    break;
+                case 'c2':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/pipeCorner2.png')
+                    }))
+                    break;
+                case 'c3':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/pipeCorner3.png')
+                    }))
+                    break;
+                case 'c4':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/pipeCorner4.png')
+                    }))
+                    break;
+                case 'blk':
+                    limites.push(new Limite({
+                        position:{x:Limite.width * j, y: Limite.height * i},
+                        image: criarImagem('./img/block.png')
+                    }))
+                    break;
+                case '[':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width, y: i * Limite.height},
+                        image: criarImagem('./img/capLeft.png')
+                    }))
+                    break;
+                case ']':
+                    limites.push(new Limite({
+                        position:{x: j * Limite.width, y: i * Limite.height},
+                        image: criarImagem('./img/capRight.png')
+                    }))
+                    break;
+                case '_':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        image: criarImagem('./img/capBottom.png')
+                    }))
+                    break;
+                case '^':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        image: criarImagem('./img/capTop.png')
+                    }))
+                    break;
+                case '+':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        image: criarImagem('./img/pipeCross.png')
+                    }))
+                    break;
+                case '5':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        color: 'blue',
+                        image: criarImagem('./img/pipeConnectorTop.png')
+                    }))
+                    break;
+                case '6':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        color: 'blue',
+                        image: criarImagem('./img/pipeConnectorRight.png')
+                        }))
+                    break;
+                case '7':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        color: 'blue',
+                        image: criarImagem('./img/pipeConnectorBottom.png')
+                    }))
+                    break;
+                case '8':
+                    limites.push(new Limite({
+                        position: {x: j * Limite.width,y: i * Limite.height},
+                        image: criarImagem('./img/pipeConnectorLeft.png')
+                    }))
+                    break;
+                case '.':
+                    bolinhas.push(new Bolinha({
+                        position: {
+                            x: j * Limite.width + Limite.width / 2,
+                            y: i * Limite.height + Limite.height / 2
+                            }
+                        }))
+                    break;
+                case 'p':
+                    powerUps.push(new PowerUp({
+                        position: {
+                            x: j * Limite.width + Limite.width / 2,
+                            y: i * Limite.height + Limite.height / 2
+                            }
+                        }))
+                    break;
+            }
+        })
+    })
+}
 
-animacao()
 
 window.addEventListener('keydown', ({ key }) => {
     switch(key){
@@ -633,4 +842,29 @@ window.addEventListener('keyup', ({ key }) => {
             break;                     
     }
 
+})
+
+// reinicia o jogo ao clicar no botao
+buttonlose.addEventListener('click', ()=>{
+    // console.log("working");
+    init();
+    animacao();
+    modalEl.style.display= 'none';
+    scoreboard.style.color = 'white';
+    scoreboard.style.border = '1px solid white'
+
+})
+buttonwin.addEventListener('click', ()=>{
+    // console.log("working");
+    init();
+    animacao();
+    modalEl2.style.display= 'none';
+    scoreboard.style.color = 'white';
+    scoreboard.style.border = '1px solid white'
+
+})
+startbtn.addEventListener('click', ()=>{
+    // console.log("working");
+    animacao();
+    startscreen.style.display = 'none';
 })
